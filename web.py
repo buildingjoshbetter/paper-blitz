@@ -1049,12 +1049,21 @@ async def generate_podcast(request: Request):
 
         prompt = PODCAST_PROMPT.format(papers_context=papers_context)
 
+        # Run script generation with keepalive pings (Vercel has ~10s idle timeout)
+        script_future = loop.run_in_executor(
+            executor, call_openrouter, "anthropic/claude-sonnet-4.5",
+            "You write engaging podcast scripts that make research fascinating. Return ONLY valid JSON arrays. No markdown fences.",
+            prompt, 8000
+        )
+
         try:
-            script_raw, _ = await loop.run_in_executor(
-                executor, call_openrouter, "anthropic/claude-sonnet-4.5",
-                "You write engaging podcast scripts that make research fascinating. Return ONLY valid JSON arrays. No markdown fences.",
-                prompt, 8000
-            )
+            # Send keepalive pings every 4 seconds while waiting for OpenRouter
+            while not script_future.done():
+                await asyncio.sleep(4)
+                if not script_future.done():
+                    yield f"data: {json.dumps({'event': 'keepalive'})}\n\n"
+
+            script_raw, _ = script_future.result()
 
             json_match = re.search(r'\[[\s\S]*\]', script_raw)
             if json_match:

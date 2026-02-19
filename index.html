@@ -1660,6 +1660,11 @@ function generatePodcast(paperIds) {
     try { msg = JSON.parse(e.data); } catch(err) { console.error('[Podcast] Bad JSON:', e.data); return; }
     console.log('[Podcast] Event:', msg.event);
 
+    if (msg.event === 'keepalive') {
+      // Server is still working, just keep connection alive
+      return;
+    }
+
     if (msg.event === 'generating_script') {
       const countEl = document.getElementById('podcast-gen-count');
       if (countEl) countEl.textContent = `Writing script for ${msg.paper_count} papers... (this takes ~30s)`;
