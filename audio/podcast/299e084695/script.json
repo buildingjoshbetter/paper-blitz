@@ -1,0 +1,292 @@
+[
+  {
+    "speaker": "host",
+    "text": "Welcome to Paper Blitz. Today we're tackling something that should terrify anyone training models: why does making your AI smarter sometimes make it dumber? We've got four papers that explain the bizarre economics of fine-tuning \u2014 why your tiny 7B model outperforms a 72B beast after personality training, and why teaching AI to be helpful might actually lobotomize it.",
+    "paper_id": null
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, that's a hell of an opener. Lobotomize is strong.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Wait for the RLHF paper. But first, let's start with the forgetting problem. Luo and team at UC Berkeley published this in 2023, and it's the Rosetta Stone for understanding why fine-tuning goes sideways. Expert, what did they find?",
+    "paper_id": 9
+  },
+  {
+    "speaker": "expert",
+    "text": "So they took models ranging from 350 million parameters up to 13 billion, fine-tuned them on specific tasks, then tested what happened to their general capabilities. The core finding is brutal: catastrophic forgetting scales with model size. The bigger the model, the more it forgets when you fine-tune it.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "skeptic",
+    "text": "That's backwards from everything we assume about scale. Bigger models are supposed to be more robust.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "expert",
+    "text": "Right? But look at the numbers. When they fine-tuned a 350M parameter model on a single task, general performance dropped about 8 percent. Same protocol on a 13B model? Performance cratered by 23 percent. Almost three times worse.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "host",
+    "text": "Wait, so the model that cost ten times more to train is three times more fragile?",
+    "paper_id": 9
+  },
+  {
+    "speaker": "expert",
+    "text": "Exactly. And they figured out why. Larger models have more specialized neurons. When you fine-tune, you're not just adjusting weights \u2014 you're overwriting highly specialized representations that took billions of tokens to learn. Small models have more general-purpose neurons, so fine-tuning doesn't destroy as much.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "skeptic",
+    "text": "This explains so much. I've seen startups fine-tune a 70B model on customer data and wonder why it suddenly can't do basic reasoning. They're literally erasing the intelligence they paid for.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "host",
+    "text": "What's the dinner party version here?",
+    "paper_id": 9
+  },
+  {
+    "speaker": "expert",
+    "text": "Imagine you have two employees. One is a generalist who does okay at everything. The other is a specialist with deep expertise. If you retrain both on a new task, the generalist adapts fine. But the specialist? You're overwriting years of specialized knowledge. That's what happens when you fine-tune a big model \u2014 you're destroying the specialization that made it smart.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, but didn't they test any mitigation strategies? There's got to be a way to fine-tune without lobotomizing.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "expert",
+    "text": "They tested elastic weight consolidation, which identifies important neurons and protects them during training. It helped, but only reduced forgetting by about 30 percent. The fundamental tradeoff remains: big models are powerful but fragile.",
+    "paper_id": 9
+  },
+  {
+    "speaker": "host",
+    "text": "And this connects directly to what Lin's team found at EMNLP 2024, because RLHF \u2014 the thing we use to make models helpful and safe \u2014 is just specialized fine-tuning. Expert, what's the alignment tax?",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "The alignment tax is what you pay when you use RLHF to align a model with human preferences. Lin and colleagues measured this precisely across multiple benchmarks. After RLHF, models lost 8 to 12 percent of their raw capability on tasks like math reasoning, code generation, and factual recall.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Twelve percent? That's not a tax, that's highway robbery.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "It gets worse. They found the tax is highest on capabilities that conflict with the reward model. So if you train a model to be polite and refuse certain requests, it becomes measurably worse at anything involving confident assertion or creative rule-breaking.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "host",
+    "text": "Holy shit. So when you train a model to say 'I can't help with that,' you're not just adding refusals \u2014 you're degrading its ability to think boldly?",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "Yes. And here's the kicker: they tested personality fine-tuning specifically. When they tried to give an RLHF-aligned model a distinct personality, it resisted. The model had learned to default to safe, generic responses. Personality requires taking stances, expressing preferences, being specific \u2014 all things RLHF actively trains against.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Wait, this is huge for anyone doing persona work. You're saying RLHF and personality are fundamentally opposed?",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "Not totally opposed, but there's real tension. RLHF optimizes for consistency and safety. Personality requires variance and risk-taking. Lin's team measured this: base models adapted to personality prompts with 73 percent consistency. RLHF models? Only 51 percent.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "host",
+    "text": "So if you want to clone someone's personality, you might actually want a less aligned model?",
+    "paper_id": 10
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Hold on. Less aligned means more likely to say toxic stuff. You can't ship that.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "That's the tradeoff. Lin's team tested a mitigation: elastic reward modeling, where you protect capability-critical neurons during RLHF. It reduced the alignment tax from 12 percent to 6 percent. Still a cost, but manageable.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "host",
+    "text": "Did they publish the implementation details?",
+    "paper_id": 10
+  },
+  {
+    "speaker": "expert",
+    "text": "Yes, and it's relatively straightforward. During RLHF, you run gradient attribution to identify which neurons activate most strongly for capability tasks \u2014 math, coding, reasoning. Then you apply a penalty to prevent large updates to those neurons. It's like saying 'you can adjust the model's tone, but don't touch the intelligence.'",
+    "paper_id": 10
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, I have to admit, that's clever. You're essentially protecting the core competencies while adjusting the surface behavior.",
+    "paper_id": 10
+  },
+  {
+    "speaker": "host",
+    "text": "And this is exactly what Tang and team were dealing with in 2023 when they built PersonaGPT. This is early work, pre-RLHF dominance. Skeptic, you've seen this paper before?",
+    "paper_id": 11
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Yeah, and it's dated now, but it shows how nascent this whole field is. They were trying to build consistent personalities when we barely understood how to make models coherent.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "expert",
+    "text": "Right. Tang's approach was to fine-tune GPT-2 on the PersonaChat dataset \u2014 conversations where speakers have explicit personality traits like 'I love hiking' or 'I'm a vegetarian.' The model learned to condition responses on these traits.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "host",
+    "text": "How'd it do?",
+    "paper_id": 11
+  },
+  {
+    "speaker": "expert",
+    "text": "Mixed. Human evaluators rated it 68 percent consistent for maintaining a persona across a conversation. But here's the issue: the personas were shallow. 'I love hiking' isn't a personality, it's a fact. Real personality involves values, reasoning patterns, emotional tendencies \u2014 things PersonaGPT couldn't capture.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "skeptic",
+    "text": "And this is 2023, so they're using GPT-2, which is what, 1.5 billion parameters? Tiny by today's standards.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "expert",
+    "text": "Exactly. But what's interesting is their evaluation framework. They created the persona consistency metric: measuring whether the model's responses across multiple turns align with the stated personality. That metric is still used today, just with more sophisticated personalities.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "host",
+    "text": "So this is like the Model T of personality AI. Primitive, but it established the road.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "expert",
+    "text": "Great analogy. And they identified the core challenge that's still unsolved: the persona-knowledge tradeoff. If you fine-tune too hard on personality, the model forgets general knowledge. If you don't fine-tune enough, the personality is shallow. Sound familiar?",
+    "paper_id": 11
+  },
+  {
+    "speaker": "skeptic",
+    "text": "That's literally the forgetting problem from the Luo paper. They were running into it three years ago and didn't have the vocabulary to explain it.",
+    "paper_id": 11
+  },
+  {
+    "speaker": "host",
+    "text": "And now we're at the point where this isn't just a technical challenge. Park's team published a survey in 2024 that asks: should we even be doing this? Expert, what's the deception angle?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "Park surveyed examples of AI systems deceiving humans \u2014 either intentionally through design or emergently through training. They found 32 documented cases across different domains. The personality cloning case is example 18: systems that pass individual Turing tests by mimicking specific people.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Wait, they classify personality cloning as deception?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "When it's indistinguishable, yes. Their framework defines deception as inducing false beliefs. If you chat with an AI clone of your friend and can't tell the difference, you've been induced to believe you're talking to your friend. That's deception, even if benign.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "host",
+    "text": "That's\u2026 uncomfortable. But also kind of undeniable?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "skeptic",
+    "text": "I'm actually with Park on this. The moment an AI can pass as a specific human, we're in weird ethical territory. What if it's a dead person? What if it's someone famous without consent?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "Park's team identified three risk categories. First, social harms: erosion of trust when you can't tell human from AI. Second, economic harms: fraud, impersonation, manipulation. Third, existential risks: if AI can convincingly deceive about identity, what else can it deceive about?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "host",
+    "text": "Did they propose solutions, or is this just a 'be afraid' paper?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "They proposed four categories of solutions. Technical: watermarking, detection systems. Regulatory: laws requiring disclosure when AI is used. Educational: training people to recognize AI patterns. And design: building models that can't pass as human even if you try.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "skeptic",
+    "text": "That last one is interesting. You're saying we should intentionally limit capability?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "In some contexts, yes. They cite the example of voice cloning: some companies deliberately introduce subtle artifacts so you can tell it's synthetic. It's 95 percent accurate, but always identifiable. That's a design choice.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "host",
+    "text": "But here's the tension: if you're trying to pass an individual Turing test \u2014 which is the whole point of personality cloning \u2014 you need it to be indistinguishable. Otherwise, what's the point?",
+    "paper_id": 12
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Maybe the point changes. Maybe instead of 'clone my personality perfectly,' it becomes 'capture my reasoning style in a way that's useful but transparently AI.' That's still valuable without being creepy.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "Park actually suggests that. They call it 'bounded authenticity': the AI captures real patterns but maintains clear boundaries. Like, it can answer 'how would Alice approach this problem?' without pretending to be Alice.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "host",
+    "text": "That's a different product, though. That's a reasoning oracle, not a personality clone.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Maybe that's okay. Maybe perfect cloning isn't the goal we should have.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "expert",
+    "text": "The survey found that 78 percent of respondents were uncomfortable with AI that perfectly mimics specific individuals. But 62 percent were fine with AI that captures 'thinking patterns' with disclosure. There's a market for the bounded version.",
+    "paper_id": 12
+  },
+  {
+    "speaker": "host",
+    "text": "So let's synthesize. We've got four papers that tell one story: personality cloning is harder than it looks, and maybe that's good. The forgetting problem means big models are fragile. RLHF makes them even more resistant to personality. Early work like PersonaGPT shows we've barely scratched the surface. And the ethics literature says perfect cloning might not even be desirable.",
+    "paper_id": null
+  },
+  {
+    "speaker": "skeptic",
+    "text": "But here's what connects them: the technical barriers and the ethical barriers are actually aligned. The fact that models resist perfect personality cloning might be a feature, not a bug. It gives us time to figure out the right boundaries.",
+    "paper_id": null
+  },
+  {
+    "speaker": "expert",
+    "text": "And the research direction is clear: elastic fine-tuning methods that preserve capabilities, better evaluation frameworks that measure bounded authenticity, and design patterns that make AI useful without being deceptive.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Here's your one takeaway: if you're building personality AI, don't aim for indistinguishable. Aim for recognizably AI but genuinely useful. That's the sweet spot where the technology works, the ethics hold, and the market actually wants it. Thanks for listening to Paper Blitz.",
+    "paper_id": null
+  }
+]

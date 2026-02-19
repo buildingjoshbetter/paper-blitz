@@ -1592,19 +1592,23 @@ let podcastState = {
   episodeId: '', paperIds: [], paperTitles: [], currentPaperId: null,
 };
 
-function renderPodcastView() {
+async function renderPodcastView() {
   const content = document.getElementById('podcast-content');
   if (!state.data) { content.innerHTML = '<p style="color:var(--text-dim)">Loading...</p>'; return; }
 
-  // Build episode batches from available digests
-  const withDigests = state.data.queue.filter(p => {
-    // We can't check server-side from here, but papers with progress likely have digests
-    return true;
-  });
+  // Fetch pre-generated episodes from server
+  let readyEpisodes = {};
+  try {
+    const resp = await fetch('/api/podcast/episodes');
+    const epData = await resp.json();
+    for (const ep of epData.episodes || []) {
+      if (ep.complete) readyEpisodes[ep.paper_ids.join(',')] = ep;
+    }
+  } catch(e) { console.log('[Podcast] Could not fetch episodes:', e); }
 
   const batches = [];
-  for (let i = 0; i < withDigests.length; i += 4) {
-    const batch = withDigests.slice(i, i + 4);
+  for (let i = 0; i < state.data.queue.length; i += 4) {
+    const batch = state.data.queue.slice(i, i + 4);
     batches.push(batch);
   }
 
@@ -1619,13 +1623,20 @@ function renderPodcastView() {
       ${batches.map((batch, bi) => {
         const ids = batch.map(p => p.id).join(',');
         const tierColors = batch.map(p => p.tier === 'S' ? 'var(--gold)' : p.tier === 'A' ? 'var(--neon-blue)' : 'var(--text-dim)');
+        const ready = readyEpisodes[ids];
+        const readyLabel = ready
+          ? `<span style="color:var(--neon-green)">▶ Play Now</span>`
+          : `<span style="color:var(--gold)">▶ Generate & Play</span>`;
+        const readyBadge = ready
+          ? `<span style="background:var(--neon-green-bg);color:var(--neon-green);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;border:1px solid rgba(0,255,136,0.2);">READY</span>`
+          : '';
         return `<div class="podcast-episode-card" onclick="generatePodcast('${ids}'); Sound.play('cardClick');">
-          <div class="podcast-ep-title">Episode ${bi + 1}: Papers ${batch[0].id}–${batch[batch.length-1].id}</div>
+          <div class="podcast-ep-title" style="display:flex;align-items:center;gap:8px;">Episode ${bi + 1}: Papers ${batch[0].id}–${batch[batch.length-1].id} ${readyBadge}</div>
           <div class="podcast-ep-papers">${batch.map((p, i) => `<span style="color:${tierColors[i]}">#${p.id}</span> ${esc(p.title)}`).join('<br>')}</div>
           <div class="podcast-ep-meta">
             <span>${batch.length} papers</span>
             <span>~${batch.length * 8} min estimated</span>
-            <span style="color:var(--gold)">▶ Generate & Play</span>
+            ${readyLabel}
           </div>
         </div>`;
       }).join('')}

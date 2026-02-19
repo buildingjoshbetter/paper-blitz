@@ -915,6 +915,8 @@ async def save_progress(update: ProgressUpdate):
 # =====================================================================
 PODCAST_DIR = AUDIO_DIR / "podcast"
 PODCAST_DIR.mkdir(exist_ok=True)
+# Pre-deployed podcast audio lives in SCRIPT_DIR/audio/podcast (committed to git)
+PODCAST_DEPLOY_DIR = SCRIPT_DIR / "audio" / "podcast"
 
 PODCAST_VOICES = {
     "host":    {"voice_id": "21m00Tcm4TlvDq8ikWAM", "name": "Rachel"},
@@ -972,22 +974,27 @@ THE PAPERS TO COVER:
 
 @app.get("/api/podcast/episodes")
 async def list_podcast_episodes():
-    """List available podcast episodes (cached)."""
+    """List available podcast episodes from both pre-deployed and runtime cache."""
     episodes = []
-    if PODCAST_DIR.exists():
-        for d in sorted(PODCAST_DIR.iterdir()):
-            if d.is_dir() and (d / "script.json").exists():
-                script = json.loads((d / "script.json").read_text())
-                meta = json.loads((d / "meta.json").read_text()) if (d / "meta.json").exists() else {}
-                clip_count = len(list(d.glob("line_*.mp3")))
-                episodes.append({
-                    "id": d.name,
-                    "paper_ids": meta.get("paper_ids", []),
-                    "paper_titles": meta.get("paper_titles", []),
-                    "lines": len(script),
-                    "clips_ready": clip_count,
-                    "created": meta.get("created", ""),
-                })
+    seen_ids = set()
+    # Check both pre-deployed (committed) and runtime (generated) dirs
+    for pdir in [PODCAST_DEPLOY_DIR, PODCAST_DIR]:
+        if pdir.exists():
+            for d in sorted(pdir.iterdir()):
+                if d.is_dir() and d.name not in seen_ids and (d / "script.json").exists():
+                    seen_ids.add(d.name)
+                    script = json.loads((d / "script.json").read_text())
+                    meta = json.loads((d / "meta.json").read_text()) if (d / "meta.json").exists() else {}
+                    clip_count = len(list(d.glob("line_*.mp3")))
+                    episodes.append({
+                        "id": d.name,
+                        "paper_ids": meta.get("paper_ids", []),
+                        "paper_titles": meta.get("paper_titles", []),
+                        "lines": len(script),
+                        "clips_ready": clip_count,
+                        "complete": clip_count >= len(script),
+                        "created": meta.get("created", ""),
+                    })
     return {"episodes": episodes}
 
 
@@ -1022,12 +1029,26 @@ async def generate_podcast(request: Request):
     ep_dir.mkdir(parents=True, exist_ok=True)
     script_file = ep_dir / "script.json"
     meta_file = ep_dir / "meta.json"
+    # Also check pre-deployed directory (committed to git, read-only on Vercel)
+    deploy_ep_dir = PODCAST_DEPLOY_DIR / ep_hash
 
     async def podcast_stream():
         loop = asyncio.get_event_loop()
         executor = ThreadPoolExecutor(max_workers=6)
 
-        # Check cache
+        # Check pre-deployed (committed) audio first
+        deploy_script = deploy_ep_dir / "script.json"
+        if deploy_script.exists():
+            script = json.loads(deploy_script.read_text())
+            all_deployed = all((deploy_ep_dir / f"line_{i}.mp3").exists() for i in range(len(script)))
+            if all_deployed:
+                yield f"data: {json.dumps({'event': 'script_ready', 'script': script, 'speakers': PODCAST_SPEAKER_META, 'episode_id': ep_hash})}\n\n"
+                for i in range(len(script)):
+                    yield f"data: {json.dumps({'event': 'audio_ready', 'index': i})}\n\n"
+                yield f"data: {json.dumps({'event': 'all_done'})}\n\n"
+                return
+
+        # Check runtime cache
         if script_file.exists():
             script = json.loads(script_file.read_text())
             all_cached = all((ep_dir / f"line_{i}.mp3").exists() for i in range(len(script)))
@@ -1114,8 +1135,10 @@ async def generate_podcast(request: Request):
 
 @app.get("/api/podcast/clip/{episode_id}/{line_index}")
 async def serve_podcast_clip(episode_id: str, line_index: int):
-    """Serve a podcast audio clip."""
+    """Serve a podcast audio clip. Check pre-deployed dir first, then runtime cache."""
     clip = PODCAST_DIR / episode_id / f"line_{line_index}.mp3"
+    if not clip.exists():
+        clip = PODCAST_DEPLOY_DIR / episode_id / f"line_{line_index}.mp3"
     if not clip.exists():
         raise HTTPException(404, "Clip not found")
     return Response(content=clip.read_bytes(), media_type="audio/mpeg")

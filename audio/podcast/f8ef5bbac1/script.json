@@ -1,0 +1,362 @@
+[
+  {
+    "speaker": "host",
+    "text": "Welcome to Paper Blitz. Today we're diving into something that's going to make you uncomfortable: AI clones that can fool the people who know you best. We've got four papers that, when you line them up, tell a story nobody in AI wants to admit out loud yet\u2014that individual-level impersonation isn't some distant sci-fi problem. It's here, it's measurable, and the gap between 'sounds human' and 'sounds like you' is closing fast.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Here's the kicker: a team at Princeton just showed that a relatively small language model\u2014eight billion parameters, something you could run on a single decent GPU\u2014fooled human evaluators into thinking it was a specific real person nearly 45% of the time. Not 'a person.' A particular, identifiable individual. Let's unpack that.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Let's start with the Princeton study\u2014IMPersona, by Quan Shi and colleagues. They're asking the question that makes everyone nervous: can an LLM impersonate not just any human, but you specifically?",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "So they took Llama 3.1, the 8-billion-parameter version\u2014deliberately chose a modest model to prove you don't need GPT-4-scale compute\u2014and fine-tuned it on individual people's personal text data. Messages, writings, the actual linguistic artifacts of someone's identity. Then they added this hierarchical memory system inspired by cognitive science.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Wait, hierarchical memory? What does that actually mean in practice?",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "Three tiers. Episodic memory\u2014specific events and conversations. Semantic memory\u2014facts, preferences, knowledge about the person. Procedural memory\u2014stylistic habits, how they structure messages, their emoji patterns. It's retrieved contextually during generation, like a RAG system but structured around how humans actually remember.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, but here's what I want to know\u2014who were the evaluators? Because there's a massive difference between fooling a stranger and fooling your spouse.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "That's the first major hole. The paper doesn't clearly specify evaluator familiarity with the target. And that's not a minor detail\u2014that's the entire experiment. An acquaintance has a completely different detection threshold than someone who texts you every day.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "So they ran blind conversation tests. Humans interacted with either the real person or the AI, then had to judge: human or machine?",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "Exactly. Two-alternative forced choice. And the supervised fine-tuning plus memory retrieval system was judged as human 44.44% of the time. Compare that to prompting-only approaches\u2014just giving the model descriptions of the target person without fine-tuning\u2014which hit about 25%.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Hold on. 44.44% sounds impressive until you realize that chance in a binary test is 50%. This model actually failed the Turing test. People correctly identified it as AI more often than not.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "That's a hell of a reframe.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Right? The paper's entire rhetorical weight is on 44% versus 25%\u2014but both systems failed. The impressive part is the 19-percentage-point improvement, not the absolute performance. And that suspiciously precise 44.44%? That's probably 8 out of 18 trials, maybe 16 out of 36. The confidence intervals could easily span from 25% to 65%.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "Which means it could be statistically indistinguishable from both the baseline and chance, yeah. No power analysis reported. No proper confidence intervals. For a paper making claims about individual impersonation, that's a serious statistical gap.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "But there's something deeper here, right? The architectural lesson. Fine-tuning alone wasn't enough. Prompting alone was dramatically worse. The combination\u2014learned style from fine-tuning plus grounded factual recall from memory\u2014that's what moved the needle.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "That's the validated takeaway. And it aligns with what we're seeing across the field. You need both. Style is learned through supervised fine-tuning on how someone actually communicates. Facts are retrieved. The hybrid architecture is the right paradigm.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, but here's the thing they don't address\u2014persona leakage. When you fine-tune on someone's messages, you're not just capturing their patterns. You're capturing everyone they interact with, the platform conventions, the cultural and temporal artifacts. The model might be impersonating 'a person from this demographic who texts on this platform in this era' more than the specific individual.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "So the data curation problem is actually the hard problem, not the model architecture.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "expert",
+    "text": "Exactly. The real bottleneck isn't model size. It's data quality about the target individual. Because the constraint is finite\u2014you only have so much data about any one person, and it's idiosyncratic and noisy. Scaling model parameters follows different laws for individual mimicry than for general capability.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Which means the competitive advantage isn't access to bigger models. It's having a pipeline for cleaning, filtering, and structuring personal data. The anti-slop problem.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "And this connects directly to what Park's team found at Stanford. They went the opposite direction\u2014not text messages, but structured interviews. Let's jump into that one.",
+    "paper_id": 1
+  },
+  {
+    "speaker": "host",
+    "text": "Joon Sung Park at Stanford, working with Google DeepMind, built AI agents for 1,052 real people. Not fictional characters. Not demographic stereotypes. Actual humans, individually simulated.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "Each participant did a two-hour qualitative interview\u2014life history, beliefs, attitudes, experiences. Those transcripts were fed into an LLM-based agent. Then they validated the agents by having them answer General Social Survey questions and comparing their responses to what the real people said when they took the same survey two weeks later.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "And here comes the number everyone's going to misinterpret: 85% accuracy.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "Why is that misleading?",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Because it's not 85% absolute accuracy. It's 85% of the rate participants matched their own responses two weeks later. If humans agree with themselves 75% of the time, and the AI agrees with the human 63.75% of the time, that's your 85%. The absolute performance is unknowable from what they published.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "And the General Social Survey is about the easiest possible benchmark for human simulation. Stable, crystallized, socially structured attitudes\u2014exactly the kind of thing an LLM can statistically impute from demographic and contextual cues. There's zero evidence this generalizes to open-ended conversation, humor, emotional dynamics, anything naturalistic.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "So they validated 'simulations of people's survey answers,' not simulations of people.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Precisely. And there's another confound\u2014the 'smart stereotype' problem. A two-hour interview is a rich demographic signal. Education level, region, class, political orientation, religiosity\u2014it all leaks through speech patterns and vocabulary. The marginal contribution of the interview beyond what the LLM would already predict from those cues? Probably more modest than it seems.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "But here's what they did get right: interview-grounded agents outperformed demographic-only agents. Agents that were only prompted with age, race, gender\u2014demographic descriptions\u2014did measurably worse. So the individual data does add signal beyond group-level stereotypes.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "What about the retention rate? 1,024 out of 1,052 participants completed the follow-up. That's 97.3%\u2014unusually high for a longitudinal study.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "That's actually impressive from a methodological standpoint. Attrition is a killer in this kind of research, and they managed to keep almost everyone. It means the validation set is robust, at least in terms of sample consistency.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Sure, but what they don't tell you is the base LLM. They don't disclose the model, the prompting strategy, temperature settings, context window management\u2014nothing. Replication is effectively impossible. For a paper making strong claims about individual simulation, that opacity is disqualifying.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "No p-values, no confidence intervals?",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "None reported in the available materials. No effect sizes, no correction for multiple comparisons. The Big Five personality prediction was described as 'comparable' to existing methods, but no exact numbers. Population-level behavioral experiments showed agents reproduced aggregate distributions, but individual-level correspondence\u2014Agent 347 behaves like Person 347\u2014wasn't demonstrated.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "And yet, there's something important here. The insight that a small amount of high-density, self-reflective data\u2014where someone explains why they think what they think\u2014might be more powerful than a massive amount of low-density data like text messages.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "Because the interview forces people to articulate their motivational structure.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "Right. It gives the LLM a generative model of the person\u2014the reasoning behind their opinions\u2014not just surface patterns. But that's also the blind spot. It captures the person's theory of themselves, which is not the same as how they actually behave in unguarded, spontaneous contexts.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Exactly. People are notoriously bad at introspecting on their own behavior. What you say you'd do in a situation versus what you actually do\u2014huge gap. So interview-based approaches might excel at capturing self-concept but fail at predicting actual behavioral output.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "So if you're building something that needs to replicate how someone talks\u2014not what they believe\u2014training on actual messages might be the better approach.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "expert",
+    "text": "Absolutely. Messages are the target distribution. They're how the person communicates in practice, not in theory. For conversational simulation, training on the output domain directly is more defensible than interview-based prompting.",
+    "paper_id": 2
+  },
+  {
+    "speaker": "host",
+    "text": "Alright, now let's bring in the benchmark everyone's been waiting for. UCSD just showed that GPT-4.5 passes the classic Turing test. Jones and Bergen, 2025.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "expert",
+    "text": "This is the first LLM to pass the original Turing formulation. Blind evaluators in text-based conversations identified GPT-4.5 as human 73% of the time. That's well above the 50% threshold, and it's the first time a system has crossed that line in a rigorous, published evaluation.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Okay, I'll admit\u2014that's legitimately impressive. 73% is not marginal. That's a clear pass.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "host",
+    "text": "This is you being won over?",
+    "paper_id": 3
+  },
+  {
+    "speaker": "skeptic",
+    "text": "On this specific claim, yeah. The classic Turing test is a well-defined benchmark. It's been the goal since 1950. If GPT-4.5 hits 73% in properly blinded evaluations, that's a real milestone. But\u2014and this is critical\u2014it's still generic human-likeness. It's not individual-level impersonation.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "expert",
+    "text": "Right. This is the population-level ceiling. GPT-4.5 can pass as 'a human.' The question Princeton and Stanford are asking is: can it pass as 'this human'? That's a categorically harder problem.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "host",
+    "text": "And that distinction is everything. Because if you're building a digital clone, your users don't care if it sounds generically human. They care if it sounds like them.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Exactly. The Turing test is a necessary baseline, but it's radically insufficient for personalized AI. It tells you the model can navigate conversational norms, avoid obvious tells, sound plausible. It doesn't tell you if it can mimic your specific sense of humor, your idiosyncratic word choices, the way you text differently when you're tired.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "expert",
+    "text": "And this is where the fourth paper comes in\u2014Mei's behavioral Turing test. Because passing a conversational test is one thing. Passing a behavioral decision-making test is another.",
+    "paper_id": 3
+  },
+  {
+    "speaker": "host",
+    "text": "Let's go there. Qiaozhu Mei at Michigan, published in PNAS. They put GPT-4 into classic economics experiments\u2014dictator games, ultimatum games, trust games\u2014and compared its choices to real human populations.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "expert",
+    "text": "The result: GPT-4's behavioral distributions were statistically indistinguishable from human population distributions. In the dictator game, it allocated money like humans do\u2014roughly 20 to 30% of the endowment, not the game-theoretic prediction of zero. In the ultimatum game, it proposed and rejected offers at rates consistent with documented fairness norms. Trust game, same thing\u2014reciprocity patterns mirrored human tendencies.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "But here's the issue I can't get past: training data contamination. GPT-4's training corpus almost certainly includes behavioral economics textbooks, meta-analyses, maybe even raw datasets from these exact games. The model could be pattern-matching to documented distributions rather than exhibiting emergent human-like reasoning.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "host",
+    "text": "So it's memorization, not reasoning.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Possibly. These are the most studied games in all of social science. The null hypothesis should be that the model absorbed this from training data, not that it spontaneously developed human-like decision-making. The paper doesn't address this at all.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "expert",
+    "text": "That's fair, but here's the other side: earlier GPT models\u2014GPT-3, GPT-3.5\u2014showed measurably worse alignment with human behavioral distributions. So there's a capability progression across model generations. If it were pure memorization, you wouldn't necessarily see that scaling pattern.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Unless the training data itself scaled. GPT-4's training set is larger and more curated. You'd expect better pattern-matching just from that.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "host",
+    "text": "Okay, but let's say we grant that GPT-4 matches human population distributions in these games\u2014what does that actually tell us?",
+    "paper_id": 4
+  },
+  {
+    "speaker": "expert",
+    "text": "It tells us that LLMs have absorbed enough of the statistical structure of human social behavior to reproduce population-level signatures. The ceiling for AI behavioral mimicry in well-documented domains is already high. But the floor for novel, personal, idiosyncratic behavior\u2014completely untested.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "And that's the gap that matters. Population-level indistinguishability does not equal individual-level fidelity. Matching the aggregate distribution of 10,000 humans in the ultimatum game tells you absolutely nothing about whether the model can replicate your specific tendency to lowball offers when you're in a bad mood.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "host",
+    "text": "That's the categorical error.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "expert",
+    "text": "Yes. And it's everywhere in how these papers are being interpreted. The model matches the crowd. It doesn't match you. Those are different problems, and the second one is orders of magnitude harder.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "And the games they tested are the simplest possible social scenarios. One-shot interactions, well-defined payoffs, no history, no evolving relationships, no ambiguity. Real human decision-making involves grudges, humor, context-dependent inconsistency, emotional state. None of that is here.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "host",
+    "text": "So the behavioral Turing test is passed at the population level, but completely unaddressed at the individual level.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "expert",
+    "text": "Correct. And that's the through-line across all four papers. Jones and Bergen show GPT-4.5 passes the classic Turing test\u2014generic human-likeness, 73% identification rate. Mei shows GPT-4 passes the behavioral Turing test at the population level\u2014statistically indistinguishable distributions. Park shows you can simulate survey attitudes at 85% of self-consistency with a two-hour interview. And Shi shows you can get to 44% individual impersonation with fine-tuning and memory retrieval.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "skeptic",
+    "text": "But none of them solve the individual-level conversational fidelity problem. Can you build something that texts like you well enough to fool your friends? That's still open.",
+    "paper_id": 4
+  },
+  {
+    "speaker": "host",
+    "text": "And that's the frontier. Let me synthesize what we've learned here.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "We now have proof that LLMs can pass the classic Turing test, match human behavioral distributions in economic games, and simulate survey attitudes from interview data at near-human consistency. The population-level problem is essentially solved. But the individual-level problem\u2014the one that actually matters for digital clones, memorial bots, personalized AI\u2014that's where all four papers hit the same wall.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Princeton showed that fine-tuning plus memory retrieval is the right architecture, but only got to 44% in a binary test. Stanford showed that rich self-reflective data helps, but only for predicting opinions, not replicating conversational style. UCSD showed the ceiling for generic human-likeness is high. Michigan showed population-level behavior is matched. None of them cracked individual-level conversational fidelity.",
+    "paper_id": null
+  },
+  {
+    "speaker": "expert",
+    "text": "And the lesson is this: the model already knows what people in general do. The entire challenge is teaching it what you specifically do differently. Your idiosyncratic errors, your weird slang, your characteristic emotional responses. That's the signal, not the baseline.",
+    "paper_id": null
+  },
+  {
+    "speaker": "skeptic",
+    "text": "Which means the competitive advantage isn't better models. It's better data curation, better evaluation, and better understanding of what individual deviation from population norms actually looks like in practice.",
+    "paper_id": null
+  },
+  {
+    "speaker": "host",
+    "text": "Here's your dinner party version: AI can now pass the Turing test. It can match how humans in general behave. It can simulate your opinions from a long interview. But can it text like you well enough to fool your spouse? Not yet. That's the gap between cloning humanity and cloning you. And that gap is where the next year of research is going to happen.",
+    "paper_id": null
+  }
+]
