@@ -1649,21 +1649,27 @@ function generatePodcast(paperIds) {
     <div style="font-size:11px;color:var(--text-dim)" id="podcast-gen-count">Preparing...</div>
   </div>`;
 
-  const evtSource = new EventSource('/api/podcast/generate?papers=' + paperIds);
+  let sseUrl = '/api/podcast/generate?papers=' + paperIds;
+  console.log('[Podcast] Starting SSE:', sseUrl);
+  const evtSource = new EventSource(sseUrl);
+  let gotAnyMessage = false;
+
   evtSource.onmessage = function(e) {
-    const msg = JSON.parse(e.data);
+    gotAnyMessage = true;
+    let msg;
+    try { msg = JSON.parse(e.data); } catch(err) { console.error('[Podcast] Bad JSON:', e.data); return; }
+    console.log('[Podcast] Event:', msg.event);
 
     if (msg.event === 'generating_script') {
       const countEl = document.getElementById('podcast-gen-count');
-      if (countEl) countEl.textContent = `Writing script for ${msg.paper_count} papers...`;
+      if (countEl) countEl.textContent = `Writing script for ${msg.paper_count} papers... (this takes ~30s)`;
     }
 
     if (msg.event === 'script_ready') {
       podcastState.script = msg.script;
       podcastState.speakers = msg.speakers;
-      podcastState.episodeId = msg.episode_id;
+      podcastState.episodeId = msg.episode_id || '';
       podcastState.totalLines = msg.script.length;
-      // Extract paper titles from data
       podcastState.paperTitles = podcastState.paperIds.map(id => {
         const p = state.data.queue.find(q => q.id === id);
         return p ? p.title : 'Paper #' + id;
@@ -1701,10 +1707,28 @@ function generatePodcast(paperIds) {
 
     if (msg.event === 'error') {
       evtSource.close();
-      area.innerHTML = `<div class="podcast-gen-status"><p style="color:var(--red)">Error: ${esc(msg.message)}</p></div>`;
+      const a = document.getElementById('podcast-player-area');
+      if (a) a.innerHTML = `<div class="podcast-gen-status">
+        <p style="color:var(--red);font-size:16px;">Generation Failed</p>
+        <p style="color:var(--text-dim);margin-top:8px;">${esc(msg.message)}</p>
+        <button class="btn btn-primary" onclick="generatePodcast('${paperIds}')" style="margin-top:16px;">Retry</button>
+      </div>`;
     }
   };
-  evtSource.onerror = () => evtSource.close();
+
+  evtSource.onerror = function(err) {
+    console.error('[Podcast] SSE error:', err);
+    evtSource.close();
+    if (!gotAnyMessage) {
+      // Connection failed before any data — show error with retry
+      const a = document.getElementById('podcast-player-area');
+      if (a) a.innerHTML = `<div class="podcast-gen-status">
+        <p style="color:var(--red);font-size:16px;">Connection Failed</p>
+        <p style="color:var(--text-dim);margin-top:8px;">Could not connect to the server. Make sure the server is running on port 8888.</p>
+        <button class="btn btn-primary" onclick="generatePodcast('${paperIds}')" style="margin-top:16px;">Retry</button>
+      </div>`;
+    }
+  };
 }
 
 function renderPodcastPlayer() {
