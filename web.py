@@ -21,8 +21,20 @@ except ImportError:
 
 # --- Config ---
 SCRIPT_DIR = Path(__file__).parent
-PAPERS_FILE = SCRIPT_DIR / "papers.json"
-DIGESTS_DIR = SCRIPT_DIR / "digests"
+IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+DATA_DIR = Path("/tmp/paper-blitz") if IS_VERCEL else SCRIPT_DIR
+PAPERS_FILE = SCRIPT_DIR / "papers.json"  # Always read from source
+PAPERS_WRITE = DATA_DIR / "papers.json"   # Write to writable location
+DIGESTS_DIR = DATA_DIR / "digests"
+
+# Initialize writable directories
+if IS_VERCEL:
+    DATA_DIR.mkdir(exist_ok=True)
+    # Copy papers.json to writable location if not there
+    if not PAPERS_WRITE.exists() and PAPERS_FILE.exists():
+        import shutil
+        shutil.copy2(PAPERS_FILE, PAPERS_WRITE)
+    PAPERS_FILE = PAPERS_WRITE
 DIGESTS_DIR.mkdir(exist_ok=True)
 
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY", "")
@@ -621,7 +633,7 @@ async def text_to_speech(request: Request):
 # =====================================================================
 # Graphic Audiobook Mode
 # =====================================================================
-AUDIO_DIR = SCRIPT_DIR / "audio"
+AUDIO_DIR = DATA_DIR / "audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 
 # Distinct ElevenLabs voices for each character
