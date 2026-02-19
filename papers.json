@@ -1,0 +1,338 @@
+{
+  "queue": [
+    {
+      "id": 1,
+      "tier": "S",
+      "title": "IMPersona: Can LLMs Impersonate Specific Individuals?",
+      "authors": "Quan Shi et al. (Princeton)",
+      "year": 2025,
+      "arxiv": "2504.04332",
+      "url": "https://arxiv.org/abs/2504.04332",
+      "why": "THE foundational paper. 44% pass rate with fine-tuned 8B. Closest study to what Skippy does.",
+      "tags": [
+        "individual-turing-test",
+        "fine-tuning",
+        "texting",
+        "impersonation"
+      ]
+    },
+    {
+      "id": 2,
+      "tier": "S",
+      "title": "Generative Agent Simulations of 1,000 People",
+      "authors": "Park et al. (Stanford/Google DeepMind)",
+      "year": 2024,
+      "arxiv": "2411.10109",
+      "url": "https://arxiv.org/abs/2411.10109",
+      "why": "85% personality accuracy from just 2-hour interviews. Proves how little data you actually need.",
+      "tags": [
+        "simulation",
+        "personality-replication",
+        "efficiency",
+        "methodology"
+      ]
+    },
+    {
+      "id": 3,
+      "tier": "S",
+      "title": "GPT-4.5 Passes the Turing Test",
+      "authors": "Jones & Bergen (UCSD)",
+      "year": 2025,
+      "arxiv": "2503.23674",
+      "url": "https://arxiv.org/abs/2503.23674",
+      "why": "First LLM to pass the classic Turing test. 73% human identification rate. Defines the benchmark you're beating.",
+      "tags": [
+        "turing-test",
+        "classic",
+        "benchmark",
+        "gpt"
+      ]
+    },
+    {
+      "id": 4,
+      "tier": "S",
+      "title": "Behavioral Turing Test for AI Decision-Making",
+      "authors": "Mei et al. (PNAS)",
+      "year": 2024,
+      "arxiv": "2405.09300",
+      "url": "https://arxiv.org/abs/2405.09300",
+      "why": "GPT-4 indistinguishable from random humans in behavioral games. Shows AI passes behavioral tests, not just chat.",
+      "tags": [
+        "behavioral",
+        "decision-making",
+        "games",
+        "turing-test"
+      ]
+    },
+    {
+      "id": 5,
+      "tier": "A",
+      "title": "Machine Mindset: An MBTI Exploration of Large Language Models",
+      "authors": "PKU-Yuan Group (Peking University)",
+      "year": 2023,
+      "arxiv": "2312.12999",
+      "url": "https://arxiv.org/abs/2312.12999",
+      "why": "Embedded 16 MBTI personality types into 7B models via SFT+DPO. Shows personality IS trainable.",
+      "tags": [
+        "personality",
+        "mbti",
+        "fine-tuning",
+        "7b"
+      ]
+    },
+    {
+      "id": 6,
+      "tier": "A",
+      "title": "Psychometric Framework for LLM Personality Assessment",
+      "authors": "Serapio-Garcia et al. (Google DeepMind)",
+      "year": 2025,
+      "arxiv": "2305.14693",
+      "url": "https://arxiv.org/abs/2305.14693",
+      "why": "Proves personality shaping in LLMs is reliable and valid using real psychometric tools.",
+      "tags": [
+        "personality",
+        "psychometrics",
+        "measurement",
+        "validation"
+      ]
+    },
+    {
+      "id": 7,
+      "tier": "A",
+      "title": "StyleTunedLM: Style-Conditioned Language Models for Author Identification",
+      "authors": "Liu et al.",
+      "year": 2024,
+      "arxiv": "2408.07849",
+      "url": "https://arxiv.org/abs/2408.07849",
+      "why": "87.9% author ID accuracy with LoRA on 7B. Directly validates your approach.",
+      "tags": [
+        "style",
+        "author-id",
+        "lora",
+        "fine-tuning"
+      ]
+    },
+    {
+      "id": 8,
+      "tier": "A",
+      "title": "Catch Me If You Can: Detecting AI-Generated Informal Text",
+      "authors": "Wang et al. (EMNLP)",
+      "year": 2025,
+      "url": "https://aclanthology.org/2025.findings-naacl.350/",
+      "why": "LLMs struggle with informal/nuanced style. Shows exactly WHERE detection happens \u2014 and how to beat it.",
+      "tags": [
+        "detection",
+        "informal-text",
+        "style",
+        "adversarial"
+      ]
+    },
+    {
+      "id": 9,
+      "tier": "A",
+      "title": "Catastrophic Forgetting in Large Language Models During Fine-Tuning",
+      "authors": "Luo et al.",
+      "year": 2023,
+      "arxiv": "2308.08747",
+      "url": "https://arxiv.org/abs/2308.08747",
+      "why": "Forgetting scales with model size. Explains why your 7B beats 72B after fine-tuning.",
+      "tags": [
+        "catastrophic-forgetting",
+        "fine-tuning",
+        "model-size",
+        "technical"
+      ]
+    },
+    {
+      "id": 10,
+      "tier": "A",
+      "title": "Mitigating the Alignment Tax of RLHF",
+      "authors": "Lin et al. (EMNLP)",
+      "year": 2024,
+      "arxiv": "2309.06256",
+      "url": "https://arxiv.org/abs/2309.06256",
+      "why": "RLHF causes measurable capability loss. Explains why instruct models resist personality training.",
+      "tags": [
+        "rlhf",
+        "alignment-tax",
+        "fine-tuning",
+        "technical"
+      ]
+    },
+    {
+      "id": 11,
+      "tier": "A",
+      "title": "PersonaGPT: An Open-Domain Conversational Agent with Personality",
+      "authors": "Tang et al.",
+      "year": 2023,
+      "arxiv": "2110.12949",
+      "url": "https://arxiv.org/abs/2110.12949",
+      "why": "Early work on persona-conditioned dialogue. Shows the evolution of the field you're now at the frontier of.",
+      "tags": [
+        "persona",
+        "dialogue",
+        "personality",
+        "foundational"
+      ]
+    },
+    {
+      "id": 12,
+      "tier": "A",
+      "title": "AI Deception: A Survey of Examples, Risks, and Potential Solutions",
+      "authors": "Park et al.",
+      "year": 2024,
+      "arxiv": "2308.14752",
+      "url": "https://arxiv.org/abs/2308.14752",
+      "why": "The ethics angle. AI passing as human raises real questions. Know the counterarguments before investors ask.",
+      "tags": [
+        "ethics",
+        "deception",
+        "safety",
+        "policy"
+      ]
+    },
+    {
+      "id": 13,
+      "tier": "B",
+      "title": "Sideloading: Creating AI Digital Twins",
+      "authors": "Korchak (LessWrong)",
+      "year": 2024,
+      "url": "https://www.lesswrong.com/posts/pv7Qpu8WSge8NRbpB/sideloading-creating-ai-digital-twins",
+      "why": "Three-tier data framework (core facts, long-term memory, historical). Practical architecture for what you're building.",
+      "tags": [
+        "digital-twin",
+        "architecture",
+        "practical",
+        "framework"
+      ]
+    },
+    {
+      "id": 14,
+      "tier": "B",
+      "title": "Do LLMs Exhibit Human-like Response Biases?",
+      "authors": "Tjuatja et al.",
+      "year": 2024,
+      "arxiv": "2308.13878",
+      "url": "https://arxiv.org/abs/2308.13878",
+      "why": "Tests whether LLMs share human cognitive biases. Important for making AI responses feel authentically human.",
+      "tags": [
+        "cognitive-bias",
+        "human-likeness",
+        "psychology",
+        "evaluation"
+      ]
+    },
+    {
+      "id": 15,
+      "tier": "B",
+      "title": "PersonalityChat: Conversation with Personality",
+      "authors": "Qian et al.",
+      "year": 2023,
+      "arxiv": "2312.09977",
+      "url": "https://arxiv.org/abs/2312.09977",
+      "why": "Personality-conditioned dialogue dataset and evaluation framework. Useful benchmark methodology.",
+      "tags": [
+        "personality",
+        "dialogue",
+        "dataset",
+        "evaluation"
+      ]
+    },
+    {
+      "id": 16,
+      "tier": "B",
+      "title": "The Turing Test Is Dead. Long Live the Turing Test.",
+      "authors": "Biever (Nature)",
+      "year": 2024,
+      "url": "https://www.nature.com/articles/d41586-024-02295-0",
+      "why": "The 'big picture' piece. Why the classic test is obsolete and what replaces it. Good for framing your pitch.",
+      "tags": [
+        "turing-test",
+        "history",
+        "framing",
+        "overview"
+      ]
+    },
+    {
+      "id": 17,
+      "tier": "B",
+      "title": "Personal LLM Agents: Insights and Survey about the Capability, Efficiency and Security",
+      "authors": "Li et al.",
+      "year": 2024,
+      "arxiv": "2401.05459",
+      "url": "https://arxiv.org/abs/2401.05459",
+      "why": "Comprehensive survey of personal AI assistants. Maps the competitive landscape around Skippy.",
+      "tags": [
+        "personal-ai",
+        "survey",
+        "landscape",
+        "agents"
+      ]
+    },
+    {
+      "id": 18,
+      "tier": "B",
+      "title": "Who is ChatGPT? Benchmarking LLMs' Psychological Portrayal",
+      "authors": "Wang et al.",
+      "year": 2024,
+      "arxiv": "2310.01386",
+      "url": "https://arxiv.org/abs/2310.01386",
+      "why": "Psychological profiling of LLMs. Shows what personality traits models naturally exhibit vs what you train in.",
+      "tags": [
+        "psychology",
+        "personality",
+        "profiling",
+        "benchmarks"
+      ]
+    },
+    {
+      "id": 19,
+      "tier": "B",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "authors": "Hu et al. (Microsoft)",
+      "year": 2021,
+      "arxiv": "2106.09685",
+      "url": "https://arxiv.org/abs/2106.09685",
+      "why": "THE paper behind your training approach. Understanding LoRA deeply lets you explain WHY your method works.",
+      "tags": [
+        "lora",
+        "fine-tuning",
+        "technical",
+        "foundational"
+      ]
+    },
+    {
+      "id": 20,
+      "tier": "B",
+      "title": "Constitutional AI: Harmlessness from AI Feedback",
+      "authors": "Bai et al. (Anthropic)",
+      "year": 2022,
+      "arxiv": "2212.08073",
+      "url": "https://arxiv.org/abs/2212.08073",
+      "why": "Understand the alignment training you're working AGAINST when doing personality fine-tuning. Know the enemy.",
+      "tags": [
+        "constitutional-ai",
+        "alignment",
+        "anthropic",
+        "technical"
+      ]
+    }
+  ],
+  "progress": {
+    "1": {
+      "completed_at": "2026-02-19T02:13:43.886479",
+      "score": 100,
+      "total": 100,
+      "attempts": 1
+    }
+  },
+  "stats": {
+    "papers_completed": 1,
+    "total_papers": 20,
+    "quiz_score": 138,
+    "quiz_total": 200,
+    "streak": 1,
+    "expertise_level": "Curious Beginner",
+    "started_at": "2026-02-19T02:10:40.172242"
+  }
+}
